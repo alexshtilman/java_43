@@ -7,7 +7,7 @@ import java.util.Random;
 public class GameService extends Thread {
 	int distance;
 	Instant start;
-	static Integer place;
+	static int place;
 	String[] participants;
 
 	public GameService(int distance, String[] participants, Instant start) {

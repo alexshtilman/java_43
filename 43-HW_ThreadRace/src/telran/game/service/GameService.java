@@ -21,6 +21,8 @@ public class GameService extends Thread {
 	public GameService(int distance, Instant start) {
 		this.distance = distance;
 		this.start = start;
+		lockedParticipants.clear();
+		syncParticipants.clear();
 		winners.clear();
 	}
 

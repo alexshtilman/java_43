@@ -1,6 +1,7 @@
 package telran.game.controller;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,7 +35,22 @@ public class GameClientAppl {
 				// we wait each thread...
 			}
 		});
+		System.out.println("=".repeat(80));
+		System.out.println("Collections.synchronizedList");
+		System.out.println("=".repeat(80));
+		for(String p:GameService.winners) {
+			System.out.println(p);
+		}
+		System.out.println("=".repeat(80));
+		System.out.println("AtomicInteger");
+		System.out.println("=".repeat(80));
 		for(String p:GameService.participants) {
+			System.out.println(p);
+		}
+		System.out.println("=".repeat(80));
+		System.out.println("synchronized (GameService.class)");
+		System.out.println("=".repeat(80));
+		for(String p:GameService.synchParticipants) {
 			System.out.println(p);
 		}
 		

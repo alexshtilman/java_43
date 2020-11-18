@@ -22,6 +22,7 @@ public class GameClientAppl {
 		int numOfThreads = io.readInteger("number of threads",3,10000);
 		int distance = io.readInteger("number of threads",100,10000);	
 		var start = Instant.now();
+		
 		List<GameService> rides = Stream.generate(()->new GameService(distance,start))
 				.limit(numOfThreads)
 				.collect(Collectors.toList());
@@ -35,24 +36,15 @@ public class GameClientAppl {
 				// we wait each thread...
 			}
 		});
-		System.out.println("=".repeat(80));
+
 		System.out.println("Collections.synchronizedList");
-		System.out.println("=".repeat(80));
-		for(String p:GameService.winners) {
-			System.out.println(p);
-		}
-		System.out.println("=".repeat(80));
-		System.out.println("AtomicInteger");
-		System.out.println("=".repeat(80));
-		for(String p:GameService.participants) {
-			System.out.println(p);
-		}
-		System.out.println("=".repeat(80));
-		System.out.println("synchronized (GameService.class)");
-		System.out.println("=".repeat(80));
-		for(String p:GameService.synchParticipants) {
-			System.out.println(p);
-		}
+		GameService.getFromCollection();
+		
+		System.out.println("ReentrantLock");
+		GameService.getLocked();
+		
+		System.out.println("ReentrantLock");
+		GameService.getSync();
 		
 	}
 }

@@ -7,25 +7,42 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GameService extends Thread {
 	int distance;
 	Instant start;
-	static AtomicInteger place = new AtomicInteger(0);
-	static int placeOld;
-	public static ArrayList<String> participants = new ArrayList<>();
-	public static ArrayList<String> synchParticipants = new ArrayList<>();
+	protected static List<String> lockedParticipants = new ArrayList<>();
+	protected static List<String> syncParticipants = new ArrayList<>();
+
 	public static List<String> winners = Collections.synchronizedList(new ArrayList<String>());
-	
-	
+	ReentrantLock lock = new ReentrantLock();
+
 	public GameService(int distance, Instant start) {
 		this.distance = distance;
 		this.start = start;
-		place.getAndSet(0);
-		placeOld = 1;
-		participants.clear();
 		winners.clear();
-		synchParticipants.clear();
+	}
+
+	private static void printList(List<String> list) {
+		int i = 1;
+		System.out.println("=".repeat(80));
+		for (String p : list) {
+			System.out.printf("place-%d: %s\n", i++, p);
+		}
+		System.out.println("=".repeat(80));
+	}
+
+	public static void getSync() {
+		printList(syncParticipants);
+	}
+
+	public static void getLocked() {
+		printList(lockedParticipants);
+	}
+
+	public static void getFromCollection() {
+		printList(winners);
 	}
 
 	@Override
@@ -40,29 +57,20 @@ public class GameService extends Thread {
 			}
 		}
 		long time = ChronoUnit.MILLIS.between(start, Instant.now());
-		participants.add(String.format("%s finished with place %d after %s Msec", threadNumber, place.addAndGet(1), time));
+
+		winners.add(threadNumber + ":" + time);
+
+		lock.lock();
 		try {
-			sleep(5);
-		} catch (InterruptedException e) {
-			// no action at interruption required
+			lockedParticipants.add(threadNumber + ":" + time);
+		} finally {
+			lock.unlock();
 		}
-		winners.add(threadNumber+":"+time);
-		try {
-			sleep(5);
-		} catch (InterruptedException e) {
-			// no action at interruption required
-		}
+
 		synchronized (GameService.class) {
-			synchParticipants.add(String.format("%s finished with place %d after %s Msec", threadNumber, placeOld, time));
-			placeOld++;
-			
-			//This code break all
-			try {
-				sleep(5);
-			} catch (InterruptedException e) {
-				// no action at interruption required
-			}
+			syncParticipants.add(threadNumber + ":" + time);
 		}
+
 	}
 
 	public int getRandomInt(int min, int max) {

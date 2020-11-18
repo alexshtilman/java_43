@@ -10,7 +10,7 @@ public class GameService extends Thread {
 	Instant start;
 	static int place;
 	public static ArrayList <String> participants = new ArrayList<>();
-
+	
 	public GameService(int distance, Instant start) {
 		this.distance = distance;
 		this.start = start;
@@ -30,11 +30,13 @@ public class GameService extends Thread {
 			}
 		}
 		long time = ChronoUnit.MILLIS.between(start, Instant.now());
-		synchronized (participants) {
+		synchronized (GameService.class) {
 			participants.add(String.format("%s finished with place %d after %s Msec", threadNumber, place, time));
 			place++;
+			
+			//This code break all
 			try {
-				sleep(getRandomInt(2, 5));
+				sleep(5);
 			} catch (InterruptedException e) {
 				// no action at interruption required
 			}

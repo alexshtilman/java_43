@@ -19,11 +19,9 @@ public class GameClientAppl {
 	public static void startRace(InputOutput io) {
 		
 		int numOfThreads = io.readInteger("number of threads",3,10000);
-		int distance = io.readInteger("number of threads",100,10000);
-		String [] participants = new String[numOfThreads];
-		
+		int distance = io.readInteger("number of threads",100,10000);	
 		var start = Instant.now();
-		List<GameService> rides = Stream.generate(()->new GameService(distance,participants,start))
+		List<GameService> rides = Stream.generate(()->new GameService(distance,start))
 				.limit(numOfThreads)
 				.collect(Collectors.toList());
 		
@@ -36,7 +34,7 @@ public class GameClientAppl {
 				// we wait each thread...
 			}
 		});
-		for(String p:participants) {
+		for(String p:GameService.participants) {
 			System.out.println(p);
 		}
 		

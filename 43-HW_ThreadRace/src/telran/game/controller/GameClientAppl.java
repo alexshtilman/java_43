@@ -50,7 +50,7 @@ public class GameClientAppl {
 			}
 		});
 
-		System.out.println("Collections.synchronizedList");
+		System.out.println("ConcurrentLinkedDeque");
 		GameService.getFromCollection();
 
 		System.out.println("ReentrantLock");

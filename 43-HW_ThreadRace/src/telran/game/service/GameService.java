@@ -20,7 +20,7 @@ public class GameService extends Thread {
 	public long finishTime;
 	public int finishPlace;
 	String threadNumber;
-	public static ConcurrentLinkedDeque winners = new ConcurrentLinkedDeque( new ArrayList<>());
+	public static ConcurrentLinkedDeque<String> winners = new ConcurrentLinkedDeque( new ArrayList<String>());
 	ReentrantLock lock = new ReentrantLock();
 
 	public GameService(int distance, Instant start) {
@@ -86,9 +86,9 @@ public class GameService extends Thread {
 		
 		
 		System.out.println("=".repeat(LINES));
-		
-		for (int i=1;i<winners.size()+2;i++) {
-			System.out.printf("%s at %d place\n", winners.pollLast(), i);
+		int i =1;
+		while (winners.size()>0) {
+			System.out.printf("%s at %d place\n", winners.pollFirst(), i++);
 		}
 		System.out.println("=".repeat(LINES));
 	}
@@ -108,7 +108,7 @@ public class GameService extends Thread {
 		finishPlace = curretPlace.addAndGet(1);
 		finishTime = time;
 		
-		winners.addLast(threadNumber + " finished with time " + time);
+		winners.add(threadNumber + " finished with time " + time);
 
 		lock.lock();
 		try {
